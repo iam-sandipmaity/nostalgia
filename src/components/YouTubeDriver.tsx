@@ -30,8 +30,10 @@ interface YouTubeDriverProps {
   isPlaying: boolean;
   volume: number;
   seekTarget?: number | null;
+  skipAction?: { type: 'next' | 'prev'; id: number } | null;
   onProgress?: (currentTime: number, duration: number) => void;
   onEnded?: () => void;
+  onTrackChange?: (info: { title: string; author: string }) => void;
 }
 
 function extractPlaylistId(url: string): string {
@@ -45,14 +47,34 @@ export function YouTubeDriver({
   isPlaying,
   volume,
   seekTarget,
+  skipAction,
   onProgress,
-  onEnded
+  onEnded,
+  onTrackChange
 }: YouTubeDriverProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const progressIntervalRef = useRef<number | null>(null);
+  const lastVideoIdRef = useRef<string>('');
 
   const playlistId = extractPlaylistId(playlistUrl);
+
+  const checkVideoData = () => {
+    if (playerRef.current && typeof playerRef.current.getVideoData === 'function') {
+      try {
+        const data = playerRef.current.getVideoData();
+        if (data && data.title && data.video_id !== lastVideoIdRef.current) {
+          lastVideoIdRef.current = data.video_id;
+          onTrackChange?.({
+            title: data.title,
+            author: data.author || ''
+          });
+        }
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   // Load YouTube IFrame API script dynamically once
   useEffect(() => {
@@ -107,12 +129,14 @@ export function YouTubeDriver({
               if (isPlaying) {
                 event.target.playVideo();
               }
+              checkVideoData();
             } catch {
               // ignore
             }
           },
           onStateChange: (event: any) => {
             if (!isMounted) return;
+            checkVideoData();
             if (window.YT && event.data === window.YT.PlayerState.ENDED) {
               onEnded?.();
             }
@@ -137,6 +161,20 @@ export function YouTubeDriver({
       isMounted = false;
     };
   }, [playlistId]);
+
+  // Sync skip action (next / prev video in YouTube playlist)
+  useEffect(() => {
+    if (!playerRef.current || !skipAction) return;
+    try {
+      if (skipAction.type === 'next' && typeof playerRef.current.nextVideo === 'function') {
+        playerRef.current.nextVideo();
+      } else if (skipAction.type === 'prev' && typeof playerRef.current.previousVideo === 'function') {
+        playerRef.current.previousVideo();
+      }
+    } catch {
+      // ignore
+    }
+  }, [skipAction]);
 
   // Sync play / pause state
   useEffect(() => {
@@ -176,7 +214,7 @@ export function YouTubeDriver({
     }
   }, [seekTarget]);
 
-  // Poll current time and duration directly from official API
+  // Poll current time, duration and video data directly from official API
   useEffect(() => {
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
 
@@ -184,6 +222,7 @@ export function YouTubeDriver({
       progressIntervalRef.current = window.setInterval(() => {
         if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
           try {
+            checkVideoData();
             const currentTime = playerRef.current.getCurrentTime() || 0;
             const duration = playerRef.current.getDuration() || 0;
             onProgress?.(currentTime, duration);

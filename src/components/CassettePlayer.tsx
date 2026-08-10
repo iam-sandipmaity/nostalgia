@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Pause, SkipForward, SkipBack, ExternalLink } from 'lucide-react';
 import { TRACKS } from '../data/songs';
@@ -16,15 +16,24 @@ export function CassettePlayer({ memoryId, memory }: CassettePlayerProps) {
   const [volume, setVolume] = useState(80);
   const [tone, setTone] = useState(50);
   const [seekTarget, setSeekTarget] = useState<number | null>(null);
-  
+  const [skipAction, setSkipAction] = useState<{ type: 'next' | 'prev'; id: number } | null>(null);
+  const [liveTrackInfo, setLiveTrackInfo] = useState<{ title: string; author: string } | null>(null);
+
   // Filter tracks for this memory
   const memoryTracks = useMemo(() => {
     const filtered = TRACKS.filter(t => t.memoryId === memoryId);
     return filtered.length > 0 ? filtered : TRACKS; // fallback if empty
   }, [memoryId]);
 
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const currentTrack = memoryTracks[currentTrackIndex];
+  const currentTrack = memoryTracks[0];
+
+  useEffect(() => {
+    setLiveTrackInfo(null);
+    setIsPlaying(false);
+    setProgress(0);
+    setSeekTarget(null);
+    setSkipAction(null);
+  }, [memoryId]);
 
   const handleProgress = (currentTime: number, dur: number) => {
     setProgress(currentTime);
@@ -39,13 +48,15 @@ export function CassettePlayer({ memoryId, memory }: CassettePlayerProps) {
   };
 
   const nextTrack = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % memoryTracks.length);
+    setSkipAction({ type: 'next', id: Date.now() });
+    setIsPlaying(true);
     setProgress(0);
     setSeekTarget(null);
   };
 
   const prevTrack = () => {
-    setCurrentTrackIndex((prev) => (prev - 1 + memoryTracks.length) % memoryTracks.length);
+    setSkipAction({ type: 'prev', id: Date.now() });
+    setIsPlaying(true);
     setProgress(0);
     setSeekTarget(null);
   };
@@ -61,6 +72,9 @@ export function CassettePlayer({ memoryId, memory }: CassettePlayerProps) {
     }
   };
 
+  const displayTitle = liveTrackInfo?.title || currentTrack?.title || 'Loading...';
+  const displayArtist = liveTrackInfo?.author || currentTrack?.artist || 'Various Artists';
+
   return (
     <div className="w-full max-w-2xl bg-zinc-900 rounded-lg p-6 md:p-8 shadow-2xl relative border border-zinc-800 flex flex-col items-center">
       
@@ -71,8 +85,10 @@ export function CassettePlayer({ memoryId, memory }: CassettePlayerProps) {
           isPlaying={isPlaying}
           volume={volume}
           seekTarget={seekTarget}
+          skipAction={skipAction}
           onProgress={handleProgress}
           onEnded={nextTrack}
+          onTrackChange={setLiveTrackInfo}
         />
       )}
 
@@ -150,10 +166,10 @@ export function CassettePlayer({ memoryId, memory }: CassettePlayerProps) {
       {/* Track Info Display */}
       <div className="w-full md:w-3/4 bg-zinc-950 rounded-sm p-4 mb-6 font-mono text-green-500 shadow-inner border border-zinc-800">
         <div className="text-[10px] uppercase text-green-700 mb-1">Now Playing</div>
-        <div className="text-lg md:text-xl truncate">{currentTrack?.title || 'Loading...'}</div>
+        <div className="text-lg md:text-xl truncate" title={displayTitle}>{displayTitle}</div>
         <div className="flex justify-between items-end mt-2">
-          <div className="text-xs text-green-600 truncate max-w-[70%]">
-            {currentTrack?.artist}
+          <div className="text-xs text-green-600 truncate max-w-[70%]" title={displayArtist}>
+            {displayArtist}
           </div>
           <div className="text-sm font-semibold">
             {formatTime(progress)} / {formatTime(duration)}
