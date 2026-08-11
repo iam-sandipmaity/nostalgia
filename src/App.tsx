@@ -4,7 +4,7 @@ import { CassettePlayer } from './components/CassettePlayer';
 import { MemoryCard } from './components/MemoryCard';
 
 const MEMORIES = [
-  { id: 'rain', title: 'Brishtir Shondhya', bengaliTitle: 'বৃষ্টির সন্ধ্যা', icon: '🌧', mood: 'Quiet · Romantic · Nostalgic', bg: 'from-blue-900 to-gray-900' },
+  { id: 'rain', title: 'Brishtir Shondhya', bengaliTitle: 'বৃষ্টির সন্ধ্যা', icon: '🌧', mood: 'Quiet · Romantic · Nostalgic', bg: 'from-blue-900 to-gray-900', bgImage: '/img/bristir-sandha.png' },
   { id: 'mela', title: 'Melar Shondhya', bengaliTitle: 'মেলার সন্ধ্যা', icon: '🎡', mood: 'Joyful · Childhood · Wandering', bg: 'from-orange-800 to-amber-900' },
   { id: 'wedding', title: 'Biye Bari', bengaliTitle: 'বিয়ে বাড়ি', icon: '💍', mood: 'Celebration · Family · Tradition', bg: 'from-red-900 to-yellow-900' },
   { id: 'bus', title: 'Bus Journey', bengaliTitle: 'বাস জার্নি', icon: '🚌', mood: 'Travel · Window · Evening', bg: 'from-gray-800 to-emerald-900' },
@@ -17,6 +17,8 @@ const MEMORIES = [
 export default function App() {
   const [activeMemory, setActiveMemory] = useState<string | null>(null);
 
+  const selectedMemory = MEMORIES.find(m => m.id === activeMemory);
+
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col">
       <div className="noise-overlay"></div>
@@ -25,12 +27,22 @@ export default function App() {
       <AnimatePresence>
         {activeMemory && (
           <motion.div
+            key={activeMemory}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5 }}
-            className={`absolute inset-0 z-0 bg-gradient-to-br opacity-80 ${MEMORIES.find(m => m.id === activeMemory)?.bg}`}
-          />
+            className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat ${selectedMemory?.bgImage ? '' : `bg-gradient-to-br opacity-80 ${selectedMemory?.bg}`}`}
+            style={
+              selectedMemory?.bgImage
+                ? { backgroundImage: `url(${selectedMemory.bgImage})` }
+                : {}
+            }
+          >
+            {selectedMemory?.bgImage && (
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+            )}
+          </motion.div>
         )}
       </AnimatePresence>
 
