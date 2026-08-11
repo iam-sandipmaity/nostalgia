@@ -5,13 +5,13 @@ import { MemoryCard } from './components/MemoryCard';
 
 const MEMORIES = [
   { id: 'rain', title: 'Brishtir Shondhya', bengaliTitle: 'বৃষ্টির সন্ধ্যা', icon: '🌧', mood: 'Quiet · Romantic · Nostalgic', bg: 'from-blue-900 to-gray-900', bgImage: '/img/bristir-sandha.png' },
-  { id: 'mela', title: 'Melar Shondhya', bengaliTitle: 'মেলার সন্ধ্যা', icon: '🎡', mood: 'Joyful · Childhood · Wandering', bg: 'from-orange-800 to-amber-900' },
-  { id: 'wedding', title: 'Biye Bari', bengaliTitle: 'বিয়ে বাড়ি', icon: '💍', mood: 'Celebration · Family · Tradition', bg: 'from-red-900 to-yellow-900' },
-  { id: 'bus', title: 'Bus Journey', bengaliTitle: 'বাস জার্নি', icon: '🚌', mood: 'Travel · Window · Evening', bg: 'from-gray-800 to-emerald-900' },
-  { id: 'tea', title: 'Cha-er Dokan', bengaliTitle: 'চায়ের দোকান', icon: '☕', mood: 'Adda · Friendship · Evening', bg: 'from-amber-900 to-stone-900' },
-  { id: 'radio', title: 'Dadu-r Radio', bengaliTitle: 'দাদুর রেডিও', icon: '📻', mood: 'Classic · Static · Morning', bg: 'from-stone-700 to-stone-900' },
-  { id: 'remake', title: 'Old Bengali Remake', bengaliTitle: 'পুরোনো গান রিমেক', icon: '🎸', mood: 'Retro · Reimagined · Melancholy', bg: 'from-purple-900 to-slate-900' },
-  { id: 'childhood', title: 'Chhotobelar Din', bengaliTitle: 'ছোটবেলার দিন', icon: '🪁', mood: 'Innocence · Sunday · Play', bg: 'from-sky-800 to-indigo-900' }
+  { id: 'mela', title: 'Melar Shondhya', bengaliTitle: 'মেলার সন্ধ্যা', icon: '🎡', mood: 'Joyful · Childhood · Wandering', bg: 'from-orange-800 to-amber-900', bgImage: '/img/melar-shandha.png' },
+  { id: 'wedding', title: 'Biye Bari', bengaliTitle: 'বিয়ে বাড়ি', icon: '💍', mood: 'Celebration · Family · Tradition', bg: 'from-red-900 to-yellow-900', bgImage: '/img/Biye-Bari.png' },
+  { id: 'bus', title: 'Bus Journey', bengaliTitle: 'বাস জার্নি', icon: '🚌', mood: 'Travel · Window · Evening', bg: 'from-gray-800 to-emerald-900', bgImage: '/img/bus-journey.png' },
+  { id: 'tea', title: 'Cha-er Dokan', bengaliTitle: 'চায়ের দোকান', icon: '☕', mood: 'Adda · Friendship · Evening', bg: 'from-amber-900 to-stone-900', bgImage: '/img/Cha-er-Dokan.png' },
+  { id: 'radio', title: 'Dadu-r Radio', bengaliTitle: 'দাদুর রেডিও', icon: '📻', mood: 'Classic · Static · Morning', bg: 'from-stone-700 to-stone-900', bgImage: '/img/Dadu-r-Radio.png' },
+  { id: 'remake', title: 'Old Bengali Remake', bengaliTitle: 'পুরোনো গান রিমেক', icon: '🎸', mood: 'Retro · Reimagined · Melancholy', bg: 'from-purple-900 to-slate-900', bgImage: '/img/Old-Bengali-Remake.png' },
+  { id: 'childhood', title: 'Chhotobelar Din', bengaliTitle: 'ছোটবেলার দিন', icon: '🪁', mood: 'Innocence · Sunday · Play', bg: 'from-sky-800 to-indigo-900', bgImage: '/img/Chhotobelar-Din.png' }
 ];
 
 export default function App() {
