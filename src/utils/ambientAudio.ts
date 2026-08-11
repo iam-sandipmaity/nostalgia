@@ -26,6 +26,25 @@ class AmbientAudioEngine {
     }
   }
 
+  public playTuningStatic() {
+    this.initContext();
+    if (!this.ctx || !this.gainNode) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(300 + Math.random() * 900, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(this.gainNode);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
+    } catch {
+      // ignore
+    }
+  }
+
   public start(memoryId: string) {
     this.stop();
     this.initContext();
