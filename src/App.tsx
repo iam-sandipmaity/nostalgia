@@ -29,18 +29,20 @@ export default function App() {
           <motion.div
             key={activeMemory}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: 0.85 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5 }}
-            className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat ${selectedMemory?.bgImage ? '' : `bg-gradient-to-br opacity-80 ${selectedMemory?.bg}`}`}
+            className={`absolute inset-0 z-0 bg-cover bg-center bg-no-repeat ${selectedMemory?.bgImage ? '' : `bg-gradient-to-br ${selectedMemory?.bg}`}`}
             style={
               selectedMemory?.bgImage
                 ? { backgroundImage: `url(${selectedMemory.bgImage})` }
                 : {}
             }
           >
-            {selectedMemory?.bgImage && (
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+            {selectedMemory?.bgImage ? (
+              <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
+            ) : (
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
             )}
           </motion.div>
         )}
