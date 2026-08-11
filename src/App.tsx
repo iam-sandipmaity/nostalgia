@@ -112,6 +112,19 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Footer Copyright */}
+      <footer className={`relative z-10 py-4 text-center text-xs font-mono tracking-widest transition-colors ${activeMemory ? 'text-paper-white/70' : 'text-dark-brown/70'}`}>
+        © {new Date().getFullYear()} SHONA DIN ·{' '}
+        <a 
+          href="https://sandipmaity.me" 
+          target="_blank" 
+          rel="noreferrer" 
+          className={`underline transition-colors font-bold ${activeMemory ? 'hover:text-paper-white' : 'hover:text-dark-brown'}`}
+        >
+          sandipmaity.me
+        </a>
+      </footer>
     </div>
   );
 }
